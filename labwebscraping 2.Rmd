@@ -1,0 +1,80 @@
+---
+title: "Lab webscraping 2"
+author: "Lin Pin Tzu (Ruby)"
+date: '2022-07-12'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(tidycensus)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+# 1 a} Show and use a census API key that gives you access to the Census Bureau data. Do not use my API key, use and show your own key.
+```{r}
+# census_api_key("4009f73e21670e9fb8801c8067991ecb855c1632", install=TRUE)
+census_api_key("4009f73e21670e9fb8801c8067991ecb855c1632",overwrite=TRUE)
+# For line 19 I can not knit that is why I use # 
+```
+
+# b) Using the link provided in your notes, secure a Census Bureau API key. Run the census code  that requires usage of the API key and then use R coding to produce a table that shows the totals for Asian Males for ages 67 to 69 by state for the year 2000.  The identifier code is P012D021
+```{r}
+age6769 <- get_decennial(geography = "state", 
+                       variables = "P012D021",
+                       year = 2000)
+age6769
+```
+
+# c) Show and use R code to find the mean, median, ,max, min, Q1, and Q3 for the median ages.
+```{r}
+mean(age6769$value)
+median(age6769$value)
+which.max(age6769$value) # the row shows the max 
+which.min(age6769$value)# the row shows the min 
+IQR(age6769$value)
+summary(age6769$value)
+```
+
+# d) Show and use R code (tidyverse/dplyr) coding to find the top ten states with highest populations of Asian Males whose ages are between 67 and 69.
+```{r}
+age6769 %>%
+  arrange(desc(value)) ->top10
+head(top10,10)
+```
+
+# 2 a) Using the link provided in your notes, use and show R coding to produce a table that shows the median ages for Hispanic or Latino women for the year 2010 (Hint: the 8 character variable code starts with characters P013. Search in your table to get the other four characters. (Hint: Ctrl F speeds up the search process)
+```{r}
+year2010 <- get_decennial(geography = "state", 
+                       variables = "P013H003",
+                       year = 2010)
+year2010 
+```
+
+# b) Show and use R code to find the mean, median, ,max, min, Q1, and Q3 for the median ages.
+```{r}
+mean(year2010$value)
+median(year2010$value)
+which.max(year2010$value) # the row of the max 
+which.min(year2010$value)# the row of the min
+IQR(year2010$value)
+summary(year2010$value)
+```
+
+# c) Use ggplot coding to produce a Histogram of vertical orientation for the median ages for the table that you produced for 2a.
+```{r,results = 'hide'}
+ggplot(year2010,mapping=aes(x=value))+
+  geom_histogram(fill="#619CFF")+
+  ggtitle("Histogram of median ages for Hispanic or Latino women for the year 2010")+
+theme_bw()
+```
+
+# d) Produce a coding chunk using dplyr functions to generate a table that gives results for values that are greater than or equal to a median age of 25.
+```{r}
+year2010 %>%
+  filter(value>=25)%>%
+  print(n=24)
+```

@@ -1,0 +1,72 @@
+---
+title: "Lab-datatable"
+author: "Lin Pin Tzu (Ruby)"
+date: '2022-07-19'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r,include=FALSE}
+library(tidyverse)  
+library(dplyr)
+library(data.table)
+```
+
+# 1) Use and show data.table code to select the variables year, month, day, and hour from the imported flights data
+```{r}
+flights1 <- fread("nycdata.csv")  
+flights1
+flights2 <- read_csv("nycdata.csv")  
+flights2
+```
+
+```{r}
+flights1[order(year,month,day,hour)]
+```
+
+# 2) Use and show data. table code to produce a table that shows a carrier of DL, an origin of JFK and a destination of SEA
+```{r}
+flights1[carrier == "DL" & origin == "JFK" & dest == "SEA"]
+```
+
+# 3) Use and show data.table code to produce a table that shows a carrier of UA, a month of March, and an airtime that is below 330.
+```{r}
+flights1[carrier == "UA" & month == "3" & air_time < "330"]
+```
+
+# 4) Use and show tidyverse code to produce a table that shows a carrier of UA, a month of March, and an airtime that is below 330.  
+```{r}
+flights2 %>%
+  select(carrier,month,air_time)%>%
+  filter(carrier == "UA", month == "3",air_time < "330") ->ua330
+ua330
+```
+
+# 5) Use the data.table method to add a variable called speed that is the average air speed of the plane in miles per hour. 
+```{r}
+flights1[, c("speed") := .(distance/(air_time/60))] -> speed
+speed
+
+```
+
+# 6) Use the tidyverse method to add a variable called speed that is the average air speed of the plane in miles per hour.
+```{r}
+flights2 %>%
+  mutate(speed = distance/(air_time/60)) -> mph
+mph
+```
+
+# 7) Show and use coding to change the carrier abbreviation of UA to UniitedAir 
+## 7a) data.table method
+```{r}
+flights1[carrier == "UA", carrier := "UniitedAir"] 
+flights1
+```
+
+## 7b tidyverse method  (Use a sequence of dplyr commands so that you can see the change in your table)
+```{r}
+flights2 %>%
+  mutate(carrier = recode(carrier, "UA" = "UniitedAir")) %>%
+   filter(carrier=="UniitedAir")
+```

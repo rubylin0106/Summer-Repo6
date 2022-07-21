@@ -1,0 +1,64 @@
+---
+title: "Lab-webscraping"
+author: "Lin Pin Tzu (Ruby)"
+date: '2022-07-07'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r,include=FALSE}
+library(rvest)
+library(tidyverse)
+library(dplyr)
+```
+
+# 3) Using the web address "https://en.wikipedia.org/wiki/ITF_Rankings" and the R coding structure presented in class to web scrape the following table found on the page.
+```{r}
+wikiurl <- read_html(
+  "https://en.wikipedia.org/wiki/ITF_Rankings")
+datatables <- wikiurl%>%
+  html_table(., fill = T)
+datatables[[3]] -> dt 
+dt
+```
+
+# 4) Using the web address "https://www.mlb.com/stats/2018"  and the R coding structure presented in class, web scrape the table found on the page.
+```{r}
+wikiurl1 <- read_html("https://www.mlb.com/stats/2018")
+baseballdata2018 <- wikiurl1%>%
+  html_table(., fill = T) 
+baseballdata2018[[1]] -> BD2018 
+BD2018
+```
+
+# 5) Use and show R code to find the average number of hits for all players in the table from number 4
+```{r}
+mean(BD2018$HH)
+```
+
+# 6) Use and show R code to produce a boxplot for the number of hits (use tidyverse/ggplot coding). Use the data table from number 4
+```{r}
+boxplot(BD2018$HH)
+#ggplot
+ggplot(data=BD2018,mapping = aes(x=HH))+
+  geom_boxplot(fill="light blue")+
+  ggtitle("Number of hits")+
+  theme_bw()
+```
+
+# 7) Use and show dplyr coding to determine which player had the greatest number of strikeouts using the data table from number 4.
+```{r}
+BD2018 %>%
+  select(PLAYERPLAYER,SOSO) %>%
+  arrange(desc(SOSO)) %>%
+  slice(1)
+```
+
+# 8) Use and show dplyr coding to show the batting averages for Washington Nationals players and Colorado Rockies players using the data table from number 4
+```{r}
+BD2018 %>%
+  filter(TEAMTEAM =="WSH"|TEAMTEAM =="COL") %>%
+  select(TEAMTEAM,AVGAVG) %>%
+  group_by(TEAMTEAM)
+```

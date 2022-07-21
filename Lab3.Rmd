@@ -1,0 +1,65 @@
+---
+title: "lab3"
+author: "Lin Pin Tzu (Ruby)"
+date: '2022-07-05'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r,include=FALSE}
+library(tidyverse)
+library(dplyr)
+library(purrr)
+```
+
+# 1) For the lists given above, show and use R code (a map function) to iteratively find the square of the sums across the vectors
+```{r}
+x <- list(2, 4, 5, 9, 1)
+y <- list(8, 7, 2, 8, 3)
+z <- list(1, 8, 5, 4, 2)
+```
+
+```{r}
+pmap_dbl(list(x,y,z),sum)^2
+```
+
+
+```{r}
+tribble( ~Student,  ~Gender,    ~Salary,
+           "John",   "Male",       65000,
+           "Alice",  "Female",    73000,
+            "Juan",   "Male",       66000,
+             "Beth",  "Female",    71500,
+             "Denise", "Female",  82000
+) -> table
+table
+```
+# 2) Using the data table above, use and show R code that will output a statement thatis descriptive for all rows of the data table.The first row is given below.  Your code should produce the other specific statements. John who is Male, has a salary that is 65000 dollars per year.
+```{r}
+table %>% 
+  pmap_chr(~ str_glue("{..1} who is {..2}, has a salary that is {..3} dollars per year ")) 
+```
+
+# 3) Write a nested loop that will produce a 5 by 5 matrix that whose matrix elementsare sums of the corresponding columns and rows.Your code should produce the matrix below:
+```{r}
+z <- matrix( nrow = 5, ncol = 5)
+for (m in 1:5) {
+  for (n in 1:5) {
+    z[m, n] <- (m + n)
+  }
+}
+print(z)
+
+```
+# 4) Use for loop coding to produce the number sequence shown below: Note that the numbers 5 and 10 are missing
+```{r}
+x <- 1:20 
+for (val in x) {
+  if (val == 5)
+    next
+    if (val == 10)
+    next
+  print(val)
+}
+```

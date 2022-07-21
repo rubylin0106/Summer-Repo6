@@ -1,0 +1,45 @@
+---
+title: "HW-webscraping"
+author: "Lin Pin Tzu (Ruby)"
+date: '2022-07-08'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r,include=FALSE}
+library(rvest)
+library(tidyverse)
+library(dplyr)
+```
+
+# 1) Run the following link that will direct you to a table on the internet. Using 4 or 5 sentences, discuss the content of the table."https://www.worldometers.info/world-population/population-by-country/"
+
+This website link contains both countries and their dependencies. The figures are based on the most recent United Nations Population Division estimates. For current estimates (live population clock), historical statistics, and forecast figures, we can click on the name of the nation or dependent. The world population of each country in 2022, and data has not only each country's population but also lots of information about each country, for example, net change, density, and land area. Which can make people know about and let us analyze and learn more about the information we want.
+
+# 2) Using the R coding structure that was illustrated in class, transfer the table observed on the internet into R Studio.  The table will be imported in tibble form.
+```{r}
+worldpop <- read_html(
+  "https://www.worldometers.info/world-population/population-by-country/")
+datatables <- worldpop%>%
+  html_table(., fill = T)
+datatables[[1]] -> world2022 
+row.names(world2022) <- NULL
+names(world2022)[3] <- "Population"
+names(world2022)[2] <- "Country"
+world2022$Population <-parse_number(world2022$Population)
+tibble(world2022)
+```
+
+# 3)	Now use R coding and dplyr functions to modify your table, until you get the exact final representation shown below
+
+```{r}
+world2022 %>%
+    select(Country,Population)%>%
+   filter(Country =="China"|Country =="United States"|Country =="Russia"
+         |Country =="Vietnam"|Country =="South Africa") %>%
+  arrange(desc(Population))
+```
+
+
+
